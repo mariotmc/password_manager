@@ -26,3 +26,7 @@
     <%= f.submit %>
   </div>
 <% end %>
+
+<%= form_with model: password, method: :delete, id: "delete_password", data: { turbo_confirm: "Are you sure?" } do |f| %>
+  <%= f.submit "Delete" %>
+<% end %>
