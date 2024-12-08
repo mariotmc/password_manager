@@ -1,0 +1,28 @@
+<%= form_with model: password do |f| %>
+  <% if f.object.errors.any? %>
+    <ul>
+      <% f.object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+		</ul>
+  <% end %>
+
+  <div>
+    <%= f.label :url %>
+    <%= f.url_field :url %>
+  </div>
+
+  <div>
+    <%= f.label :username %>
+    <%= f.text_field :username %>
+  </div>
+
+  <div>
+    <%= f.label :password %>
+    <%= f.text_field :password %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>
