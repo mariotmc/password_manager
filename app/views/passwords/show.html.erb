@@ -8,7 +8,9 @@
 		</svg>
 	<% end %>
 </h1>
-<%= link_to "Edit", edit_password_path(@password) %>
+<% if current_user_password.editable? %>
+	<%= link_to "Edit", edit_password_path(@password) %>
+<% end %>
 
 <h6>Username</h6>
 <div class="flex gap-1 mb-5">
@@ -22,15 +24,19 @@
 	<%= button_tag "Copy", data: { controller: "clipboard", action: "clipboard#copy", clipboard_content_value: @password.password } %>
 </div>
 
-<h6 class="mt-5">Share</h6>
-
+<h6 class="mt-5">Shared with</h6>
 <ul class="flex flex-col gap-2 m-0 p-0 divide-y divide-gray-200 list-none">
-	<%= link_to "Add a user", new_password_share_path(@password), class: "block" %>
+	<% if current_user_password.shareable? %>
+		<%= link_to "Add a user", new_password_share_path(@password), class: "block" %>
+	<% end %>
 
-	<% @password.users.excluding(current_user).each do |user| %>
+	<% @password.user_passwords.includes(:user).each do |user_password| %>
 		<li class="flex justify-between items-center m-0 pt-2 first:pt-0">
-			<%= user.email %>
-			<%= button_to "Remove", password_share_path(@password, user), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+			<span><%= user_password.user.email %></span>
+			<span class="ml-auto mr-5 text-sm text-gray-500"><%= user_password.role.titleize %></span>
+			<% if current_user_password.deletable? %>
+				<%= button_to "Remove", password_share_path(@password, user_password), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "text-sm text-red-500" %>
+			<% end %>
 		</li>
 	<% end %>
 </ul>
